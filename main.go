@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"startup_funding/handler"
 	"startup_funding/user"
@@ -21,17 +22,26 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
+	userByEmail, err := userRepository.FindByEmail("dhans@gmail.com")
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	if userByEmail.ID == 0 {
+		fmt.Println("User tidak ditemukan")
+	} else {
+		fmt.Println(userByEmail.Name)
+	}
+
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.RegisterUser)
+	api.POST("/sessions", userHandler.Login)
 
 	router.Run()
-	//input
-	//handler : mapping input dari user -> struct input
-	// service : melakukan mapping dari struct input ke struct user
-	// repository
-	//db
+
 }
