@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	auth "startup_funding/Auth"
 	"startup_funding/handler"
 	"startup_funding/user"
 
@@ -23,19 +23,9 @@ func main() {
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
-	userByEmail, err := userRepository.FindByEmail("dhans@gmail.com")
+	authService := auth.NewService()
 
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	if userByEmail.ID == 0 {
-		fmt.Println("User tidak ditemukan")
-	} else {
-		fmt.Println(userByEmail.Name)
-	}
-
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
