@@ -19,6 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
 
@@ -41,6 +42,8 @@ func main() {
 
 	api.POST("/users", userHandler.RegisterUser)
 	api.POST("/sessions", userHandler.Login)
+	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
+	api.POST("/avatars", userHandler.UploadAvatar)
 
 	router.Run()
 
