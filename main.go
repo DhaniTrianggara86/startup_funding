@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	auth "startup_funding/Auth"
@@ -31,12 +30,9 @@ func main() {
 
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
-
 	campaignService := campaign.NewService(campaignRepository)
-	campaigns, _ := campaignService.FindCampaigns(0)
 
-	fmt.Println(len(campaigns))
-
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
@@ -46,6 +42,9 @@ func main() {
 	api.POST("/sessions", userHandler.Login)
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
+
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
+	api.GET("/campaigns/:id", campaignHandler.GetCampaigns)
 	router.Run()
 
 }
