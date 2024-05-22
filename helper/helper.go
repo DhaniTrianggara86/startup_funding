@@ -19,15 +19,18 @@ func APIResponse(message string, code int, status string, data interface{}) Resp
 		Code:    code,
 		Status:  status,
 	}
+
 	jsonResponse := Response{
 		Meta: meta,
 		Data: data,
 	}
+
 	return jsonResponse
 }
 
 func FormatValidationError(err error) []string {
 	var errors []string
+
 	for _, e := range err.(validator.ValidationErrors) {
 		errors = append(errors, e.Error())
 	}
